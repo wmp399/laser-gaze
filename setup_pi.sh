@@ -7,17 +7,24 @@ sudo apt upgrade -y
 echo "get laser-gaze files"
 git clone https://github.com/wmp399/laser-gaze.git
 
-# Remove any existing docker installation
-echo "Remove any existing docker installation"
-sudo apt-get purge docker-ce docker-ce-cli containerd.io -y
+# get rplidar driver
+echo "get rplidar driver"
+cd laser-gaze
+git clone https://github.com/babakhani/rplidar_ros2
+# get unitree lidar driver
+echo "get unitree lidar driver"
+git clone https://github.com/unitreerobotics/unilidar_sdk/tree/main
+cd ..
 
 # Get docker and install
 echo "Get docker and install"
 sudo apt-get install docker
 
 "Build ROS-Base"
-cd laser-gaze/docker
+cd laser-gaze/docker-iron
 docker build -t ros2 .
 
+docker-compose up -d
+
 echo "done."
-# echo "type `docker run -it -v /home/geeks/laser-gaze:/ros2 ros2` to run ros2"
+echo "type `docker run -it docker-iron_ros2_1` to run ros2"
