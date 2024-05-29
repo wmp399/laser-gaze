@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  ros2:
+    build: .
+    network_mode: host
+    ipc: host
+    volumes:
+      - /home/geeks/ros:/home/ros
+      - /home/geeks/laser-gaze:/ros2
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    tty: true
+    environment:
+      - DISPLAY
