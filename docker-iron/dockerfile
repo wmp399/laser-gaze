@@ -1,6 +1,10 @@
 # start with the most recently released official iron perception docker imager
 FROM ros:iron-perception
 
+ENV ROS_VERSION=2
+ENV ROS_DISTRO=iron
+ENV ROS_PYTHON_VERSION=3
+
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
@@ -25,14 +29,14 @@ RUN colcon metadata update
 RUN apt-get update && apt-get install -y --no-install-recommends ros-iron-desktop
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends ros-iron-navigation2
-RUN apt-get install -y  ros-iron-slam-toolbox
+RUN apt-get install -y --no-install-recommends ros-iron-slam-toolbox
 RUN apt-get install -y --no-install-recommends ros-iron-rqt*
 RUN apt-get install -y --no-install-recommends ros-iron-rviz2*
 RUN apt-get install -y --no-install-recommends ros-iron-rmw-cyclonedds-cpp
 
 # install a text editor
-RUN apt-get install nano -y --no-install-recommends
+RUN apt-get install -y --no-install-recommends nano
 
 # add commands to terminal startup script
 RUN sudo echo "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /root/.bashrc
-RUN sudo echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
+RUN sudo echo "source /opt/ros/iron/setup.bash" >> /root/.bashrc
