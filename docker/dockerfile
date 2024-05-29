@@ -1,4 +1,5 @@
-FROM ros:humble
+# start with the most recently released official iron perception docker imager
+FROM ros:iron-perception
 
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -11,27 +12,27 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && rm -rf /var/lib/apt/lists/*
 
 # bootstrap rosdep
-RUN rosdep init && \
-  rosdep update --rosdistro $ROS_DISTRO
+# RUN rosdep init
+RUN rosdep update --rosdistro $ROS_DISTRO
 
 # setup colcon mixin and metadata
-RUN colcon mixin add default \
-      https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml && \
-    colcon mixin update && \
-    colcon metadata add default \
-      https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml && \
-    colcon metadata update
+# RUN colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml 
+RUN colcon mixin update 
+# RUN colcon metadata add default https://raw.githubusercontent.com/colcon/colcon-metadata-repository/master/index.yaml 
+RUN colcon metadata update
 
 # install ros2 packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ros-humble-desktop=0.10.0-1* 
+RUN apt-get update && apt-get install -y --no-install-recommends ros-iron-desktop
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends ros-humble-navigation2 ros-humble-nav2-bringup
-RUN apt-get install -y --no-install-recommends ros-humble-rviz2
-RUN apt-get install -y --no-install-recommends ros-humble-rmw-cyclonedds-cpp
+RUN apt-get install -y --no-install-recommends ros-iron-navigation2
+RUN apt-get install -y  ros-iron-slam-toolbox
+RUN apt-get install -y --no-install-recommends ros-iron-rqt*
+RUN apt-get install -y --no-install-recommends ros-iron-rviz2*
+RUN apt-get install -y --no-install-recommends ros-iron-rmw-cyclonedds-cpp
+
+# install a text editor
 RUN apt-get install nano -y --no-install-recommends
-RUN apt-get install -y ros-humble-turtlebot3*
-RUN apt-get install -y  ros-humble-slam-toolbox
+
+# add commands to terminal startup script
 RUN sudo echo "RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /root/.bashrc
-RUN sudo echo "export TURTLEBOT3_MODEL=waffle" >> /root/.bashrc
 RUN sudo echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc

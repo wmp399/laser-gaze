@@ -1,0 +1,6 @@
+To build the container, do:
+cd docker
+docker build -t ros2 .
+
+To run the container, do: 
+docker-compose up -d
