@@ -1,14 +1,24 @@
 version: "3.9"
 services:
-  ros:
-    build: .
+  ros-noetic:
+    build: 
+        context: .
+        dockerfile: dockerfile
     network_mode: host
     ipc: host
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    privileged: true
+    environment:
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - XAUTHORITY=/tmp/.docker.xauth
     volumes:
       - /home/geeks/ros:/home/ros
       - /home/geeks/laser-gaze:/ros
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
-    tty: true
-    environment:
-      - DISPLAY
+    
+    
