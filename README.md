@@ -10,10 +10,12 @@ Running LaserGaze requires a few depedencies - docker, docker-compose, the Unitr
 # Building and Starting the Docker Image
 Running the script setup_pi.sh will install these dependencies automatically. To build the docker image manually, you can run: 
 
-`cd laser-gaze/docker-noetic
+```console
+cd laser-gaze/docker-noetic
 docker build -t ros .
 docker-compose up -d
-docker exec -it docker-noetic_ros_1 bash`
+docker exec -it docker-noetic_ros_1 bash
+```
 
 # Starting LaserGaze
 
