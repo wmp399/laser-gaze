@@ -19,6 +19,7 @@ sudo apt-get install docker
 sudo apt-get install docker-compose
 
 "Build ROS-Base"
+xhost local:root
 cd laser-gaze/docker-noetic
 docker build -t ros .
 

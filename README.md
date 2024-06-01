@@ -11,10 +11,10 @@ Running LaserGaze requires a few depedencies - docker, docker-compose, the Unitr
 Running the script setup_pi.sh will install these dependencies automatically. To build the docker image manually, you can run the following terminal commands. Note the line that says `xhost local:root`. This allows any graphics inside the docker container to be piped out to the host via X11. This does not need to be run if data visualization is not needed or run on a seperate host.
 
 ```console
+xhost local:root
 cd laser-gaze/docker-noetic
 docker build -t ros .
 docker-compose up -d
-xhost local:root
 docker exec -it docker-noetic_ros_1 bash
 ```
 
