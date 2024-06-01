@@ -1,0 +1,24 @@
+FROM ros:noetic-ros-base
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends nano
+RUN apt-get install -y --no-install-recommends git
+RUN apt-get install -y --no-install-recommends ros-noetic-desktop
+RUN apt-get install -y --no-install-recommends ros-noetic-pcl-conversions
+RUN apt-get install -y --no-install-recommends ros-noetic-pcl-ros
+RUN apt-get install -y --no-install-recommends libeigen3-dev
+RUN apt-get updgrade
+RUN apt-get autoremove
+
+RUN echo "source /opt/ros/noetic/setup.bash" >> /root/.bashrc
+
+RUN cd ros \
+    && git clone https://github.com/unitreerobotics/unilidar_sdk.git \
+    && cd unilidar_sdk/unitree_lidar_ros \
+    && catkin_make
+RUN cd ros \
+    && mkdir -p catkin_point_lio_unilidar/src \
+    && cd catkin_point_lio_unilidar/src \
+    && git clone https://github.com/unitreerobotics/point_lio_unilidar.git \
+    && cd .. \
+    && catkin_make

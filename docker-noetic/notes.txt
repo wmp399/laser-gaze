@@ -1,0 +1,8 @@
+To build the container, do:
+cd docker
+docker build -t ros_noetic .
+
+To run the container, do: 
+docker-compose up -d
+
+To start an interactive terminal, do: 
