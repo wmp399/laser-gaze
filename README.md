@@ -22,6 +22,7 @@ docker exec -it docker-noetic_ros_1 bash
 
 
 ## Useful Links / References: 
-https://www.kevsrobots.com/learn/learn_ros/
+https://wiki.ros.org/
 https://github.com/unitreerobotics/unilidar_sdk/tree/main
 https://github.com/unitreerobotics/point_lio_unilidar/tree/main
+https://www.kevsrobots.com/learn/learn_ros/
