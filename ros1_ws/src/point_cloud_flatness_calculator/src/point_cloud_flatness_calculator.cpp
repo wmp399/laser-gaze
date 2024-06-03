@@ -21,15 +21,6 @@ public:
     {
         // Initialize node
         ros::NodeHandle nh;
-        ros::NodeHandle pnh("~");
-
-        // Parameters for the bounding box
-        pnh.param("min_x", min_x_, -1.0);
-        pnh.param("max_x", max_x_, 1.0);
-        pnh.param("min_y", min_y_, -1.0);
-        pnh.param("max_y", max_y_, 1.0);
-        pnh.param("min_z", min_z_, -1.0);
-        pnh.param("max_z", max_z_, 1.0);
 
         // Subscribe to the PointCloud2 topic
         point_cloud_sub_ = nh.subscribe("/point_cloud", 10, &PointCloudFlatnessCalculator::pointCloudCallback, this);
@@ -41,27 +32,15 @@ public:
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
         pcl::fromROSMsg(*msg, *cloud);
 
-        // Extract points within the bounding box
-        pcl::PointCloud<pcl::PointXYZ>::Ptr region_points(new pcl::PointCloud<pcl::PointXYZ>);
-        for (const auto& point : cloud->points)
+        if (cloud->points.empty())
         {
-            if (point.x >= min_x_ && point.x <= max_x_ &&
-                point.y >= min_y_ && point.y <= max_y_ &&
-                point.z >= min_z_ && point.z <= max_z_)
-            {
-                region_points->points.push_back(point);
-            }
-        }
-
-        if (region_points->points.empty())
-        {
-            ROS_INFO("No points in the specified region.");
+            ROS_INFO("No points in the point cloud.");
             return;
         }
 
         // Compute flatness
-        double flatness = calculateFlatness(region_points);
-        ROS_INFO("Flatness of the point cloud in the specified region: %f", flatness);
+        double flatness = calculateFlatness(cloud);
+        ROS_INFO("Flatness of the point cloud: %f", flatness);
     }
 
     double calculateFlatness(const pcl::PointCloud<pcl::PointXYZ>::Ptr& points)
@@ -98,7 +77,6 @@ public:
 
 private:
     ros::Subscriber point_cloud_sub_;
-    double min_x_, max_x_, min_y_, max_y_, min_z_, max_z_;
 };
 
 int main(int argc, char** argv)
