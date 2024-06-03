@@ -7,7 +7,7 @@ information on what the responses are generated from :( -->
 
 <package format="2">
   <name>point_cloud_filter</name>
-  <version>1.0.0</version>
+  <version>0.0.1</version>
   <description>The point_cloud_filter package</description>
   <maintainer email="wmp3.99@gmail.com">William Peyton</maintainer>
   <license>BSD</license>
