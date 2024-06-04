@@ -39,19 +39,19 @@ private:
         // Filter along x-axis
         pass.setInputCloud(cloud);
         pass.setFilterFieldName("x");
-        pass.setFilterLimits(0.0, 1.0); // Change these limits according to your region of interest
+        pass.setFilterLimits(-1.0, 1.0); // Change these limits according to your region of interest
         pass.filter(*cloud_filtered);
 
         // Filter along y-axis
         pass.setInputCloud(cloud_filtered);
         pass.setFilterFieldName("y");
-        pass.setFilterLimits(-0.5, 0.5); // Change these limits according to your region of interest
+        pass.setFilterLimits(-1.0, 1.0); // Change these limits according to your region of interest
         pass.filter(*cloud_filtered);
 
         // Filter along z-axis
         pass.setInputCloud(cloud_filtered);
         pass.setFilterFieldName("z");
-        pass.setFilterLimits(0.0, 1.5); // Change these limits according to your region of interest
+        pass.setFilterLimits(0.0, 3.0); // Change these limits according to your region of interest
         pass.filter(*cloud_filtered);
 
         // Convert PCL PointCloud back to PointCloud2 message
