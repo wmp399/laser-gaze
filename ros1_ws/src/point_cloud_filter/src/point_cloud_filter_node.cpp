@@ -9,7 +9,6 @@ information on what the responses are generated from :( */
 #include <pcl_ros/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/filters/passthrough.h>
-
 class PointCloudFilter {
 public:
     PointCloudFilter() {
@@ -17,15 +16,21 @@ public:
         ros::NodeHandle nh;
 
         // Subscribe to the input PointCloud2 topic
-        pointcloud_sub = nh.subscribe("/unilidar/cloud", 1, &PointCloudFilter::pointCloudCallback, this);
+        pointcloud_sub = nh.subscribe("/pcl_filter_input", 1, &PointCloudFilter::pointCloudCallback, this);
 
         // Advertise the output PointCloud2 topic
-        pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/point_cloud_filtered", 1);
+        pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/pcl_filter_output", 1);
     }
 
 private:
     ros::Subscriber pointcloud_sub;
     ros::Publisher pointcloud_pub;
+    double x_min;
+    double x_max;
+    double y_min;
+    double y_max;
+    double z_min;
+    double z_max;
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg) {
         // Convert PointCloud2 message to PCL PointCloud
@@ -39,19 +44,19 @@ private:
         // Filter along x-axis
         pass.setInputCloud(cloud);
         pass.setFilterFieldName("x");
-        pass.setFilterLimits(-1.0, 1.0); // Change these limits according to your region of interest
+        pass.setFilterLimits(ros::param::param<double>("/x_min", x_min, 0.0), ros::param::param<double>("/x_max", x_max, 1.0)); // Change these limits according to your region of interest
         pass.filter(*cloud_filtered);
 
         // Filter along y-axis
         pass.setInputCloud(cloud_filtered);
         pass.setFilterFieldName("y");
-        pass.setFilterLimits(-1.0, 1.0); // Change these limits according to your region of interest
+        pass.setFilterLimits(ros::param::param<double>("/y_min", y_min, 0.0), ros::param::param<double>("/y_max", y_max, 1.0)); // Change these limits according to your region of interest
         pass.filter(*cloud_filtered);
 
         // Filter along z-axis
         pass.setInputCloud(cloud_filtered);
         pass.setFilterFieldName("z");
-        pass.setFilterLimits(0.0, 3.0); // Change these limits according to your region of interest
+        pass.setFilterLimits(ros::param::param<double>("/z_min", z_min, 0.0), ros::param::param<double>("/z_max", z_max, 1.0)); // Change these limits according to your region of interest
         pass.filter(*cloud_filtered);
 
         // Convert PCL PointCloud back to PointCloud2 message

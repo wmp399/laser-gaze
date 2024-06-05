@@ -23,7 +23,7 @@ public:
         ros::NodeHandle nh;
 
         // Subscribe to the PointCloud2 topic
-        point_cloud_sub_ = nh.subscribe("/point_cloud_filtered", 10, &PointCloudFlatnessCalculator::pointCloudCallback, this);
+        point_cloud_sub_ = nh.subscribe("/pcl_flatness_input", 10, &PointCloudFlatnessCalculator::pointCloudCallback, this);
     }
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& msg)

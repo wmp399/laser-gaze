@@ -18,9 +18,9 @@ public:
     PointCloudObjectIdentifier()
     {
         // Subscribe to the input point cloud topic
-        sub_ = nh_.subscribe("/point_cloud_filtered", 1, &PointCloudObjectIdentifier::pointCloudCallback, this);
+        sub_ = nh_.subscribe("/pcl_cluster_input", 1, &PointCloudObjectIdentifier::pointCloudCallback, this);
         // Advertise the output point cloud topic for clusters
-        pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/segmented_clusters", 1);
+        pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/pcl_cluster_output", 1);
     }
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
