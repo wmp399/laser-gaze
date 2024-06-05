@@ -29,3 +29,5 @@ Unitree Lidar L1 SDK: https://github.com/unitreerobotics/unilidar_sdk/tree/main
 Unitree LIO Implementation: https://github.com/unitreerobotics/point_lio_unilidar/tree/main
 
 Learn ROS Course by Kevin McAleer (including getting ROS running in Docker): https://www.kevsrobots.com/learn/learn_ros/
+
+Running a ROS Launcher Automatically on Boot: https://roboticsbackend.com/make-ros-launch-start-on-boot-with-robot_upstart/
