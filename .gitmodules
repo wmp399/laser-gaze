@@ -1,0 +1,3 @@
+[submodule "ros1_ws/src/point_lio_unilidar"]
+	path = ros1_ws/src/point_lio_unilidar
+	url = https://github.com/unitreerobotics/point_lio_unilidar.git
