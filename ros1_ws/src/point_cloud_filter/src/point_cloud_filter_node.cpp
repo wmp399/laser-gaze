@@ -17,10 +17,10 @@ public:
         ros::NodeHandle nh;
 
         // Subscribe to the input PointCloud2 topic
-        pointcloud_sub = nh.subscribe("/input_pointcloud", 1, &PointCloudFilter::pointCloudCallback, this);
+        pointcloud_sub = nh.subscribe("/unilidar/cloud", 1, &PointCloudFilter::pointCloudCallback, this);
 
         // Advertise the output PointCloud2 topic
-        pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/filtered_pointcloud", 1);
+        pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/point_cloud_filtered", 1);
     }
 
 private:
