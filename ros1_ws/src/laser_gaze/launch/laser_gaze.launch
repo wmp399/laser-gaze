@@ -1,0 +1,8 @@
+<launch>
+    <!-- Unilidar SDK Node (Unitree LIDAR L1 Driver) -->
+    <include file="$(find unitree_lidar_ros)/launch/run_without_rviz.launch" ns="unitree"/>
+
+    <!-- LIO and Mapping nodes -->
+    <include file="$(find point_lio_unilidar)/launch/mapping_unilidar_without_rviz.launch" ns="unitree"/>
+
+</launch>
