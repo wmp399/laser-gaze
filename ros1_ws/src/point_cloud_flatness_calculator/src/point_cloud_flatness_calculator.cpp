@@ -4,6 +4,7 @@ I would love to cite my work here, but ChatGPT does not provide
 information on what the responses are generated from :( */
 
 #include <ros/ros.h>
+#include <std_msgs/Float64.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_cloud.h>
@@ -24,6 +25,7 @@ public:
 
         // Subscribe to the PointCloud2 topic
         point_cloud_sub_ = nh.subscribe("/pcl_flatness_input", 10, &PointCloudFlatnessCalculator::pointCloudCallback, this);
+        flatness_pub_ = nh.advertise<std_msgs::Float64>("/pcl_flatness_output", 1);
     }
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& msg)
@@ -39,8 +41,10 @@ public:
         }
 
         // Compute flatness
-        double flatness = calculateFlatness(cloud);
-        ROS_INFO("Flatness of the point cloud: %f", flatness);
+        std_msgs::Float64 output;
+        output.data = calculateFlatness(cloud);
+        flatness_pub_.publish(output);
+        //ROS_INFO("Flatness of the point cloud: %f", output.data);
     }
 
     double calculateFlatness(const pcl::PointCloud<pcl::PointXYZ>::Ptr& points)
@@ -77,6 +81,7 @@ public:
 
 private:
     ros::Subscriber point_cloud_sub_;
+    ros::Publisher flatness_pub_;
 };
 
 int main(int argc, char** argv)

@@ -19,6 +19,7 @@
 
     <!-- Flatness Calculator Node-->
     <remap from="/pcl_flatness_input" to="/flatness/cloud_filtered" />
+    <remap from="/pcl_flatness_output" to="/flatness/flatness_value" />
     <node pkg="point_cloud_flatness_calculator" type="point_cloud_flatness_calculator" name="pcl_flatness" ns="flatness" respawn="true"/>
 
     <!-- Cluster Filter Node-->
