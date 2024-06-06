@@ -39,11 +39,22 @@
     <remap from="/pcl_cluster_output" to="/object_identifier/clusters" />
     <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true"/>
 
-    <!-- Center Audio Node-->
-    <!-- TODO: Copy for left and right sounds? -->
-    <remap from="/play_wav_trigger" to="/play_wav_trigger" /> <!-- TBD what the actual topic is named-->
-    <node pkg="wav_player" type="wav_player" name="audio_center" ns="audio" respawn="true">
+    <!-- Left Audio Node-->
+    <remap from="/play_wav_trigger" to="/audio/beep_left_trigger" />
+    <node pkg="wav_player" type="wav_player" name="beep_left" ns="audio" respawn="true">
         <param name="wav_file" type="string" value="test.wav"/> <!-- TBD what the actual filename is-->
     </node>
 
-</launch>
+    <!-- Center Audio Node-->
+    <remap from="/play_wav_trigger" to="/audio/beep_center_trigger" />
+    <node pkg="wav_player" type="wav_player" name="beep_center" ns="audio" respawn="true">
+        <param name="wav_file" type="string" value="test.wav"/> <!-- TBD what the actual filename is-->
+    </node>
+
+    <!-- Center Audio Node-->
+    <remap from="/play_wav_trigger" to="/audio/beep_right_trigger" />
+    <node pkg="wav_player" type="wav_player" name="beep_right" ns="audio" respawn="true">
+        <param name="wav_file" type="string" value="test.wav"/> <!-- TBD what the actual filename is-->
+    </node>
+
+</launch>cd 

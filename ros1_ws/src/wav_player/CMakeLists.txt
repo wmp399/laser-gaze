@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
+catkin_package()
+
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SNDFILE REQUIRED sndfile)
 pkg_check_modules(AO REQUIRED ao)
@@ -22,11 +24,8 @@ include_directories(
 )
 
 add_executable(wav_player src/wav_player.cpp)
-
 target_link_libraries(wav_player
   ${catkin_LIBRARIES}
   ${SNDFILE_LIBRARIES}
   ${AO_LIBRARIES}
 )
-
-add_dependencies(wav_player ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
