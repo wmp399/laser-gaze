@@ -12,7 +12,7 @@ max_volume: 1.0     # 1.0 is full volume
 center_band: 10      # in degrees
 
 # Range constants for distance to beep interval conversion
-min_interval: 0.1   # in seconds
+min_interval: 0.05  # in seconds
 max_interval: 3.0   # in seconds
-min_distance: 0.1   # in meters
+min_distance: 0.2   # in meters
 max_distance: 10.0  # in meters
