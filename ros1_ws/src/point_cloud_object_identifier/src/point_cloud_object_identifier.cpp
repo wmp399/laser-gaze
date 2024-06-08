@@ -11,6 +11,7 @@ information on what the responses are generated from :( */
 #include <pcl/filters/passthrough.h>
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl_ros/point_cloud.h>
+#include <pcl/common/centroid.h>
 
 class PointCloudObjectIdentifier
 {
@@ -20,7 +21,9 @@ public:
         // Subscribe to the input point cloud topic
         sub_ = nh_.subscribe("/pcl_cluster_input", 1, &PointCloudObjectIdentifier::pointCloudCallback, this);
         // Advertise the output point cloud topic for clusters
-        pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/pcl_cluster_output", 1);
+        clusters_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/pcl_cluster_output", 1);
+        // Advertise the output point cloud topic for clusters
+        centroids_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/pcl_centroid_output", 1);
     }
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
@@ -34,8 +37,8 @@ public:
 
         std::vector<pcl::PointIndices> cluster_indices;
         pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
-        ec.setClusterTolerance(0.02); // 2cm
-        ec.setMinClusterSize(100);
+        ec.setClusterTolerance(0.10); // 10cm
+        ec.setMinClusterSize(50);
         ec.setMaxClusterSize(25000);
         ec.setSearchMethod(tree);
         ec.setInputCloud(cloud);
@@ -56,13 +59,31 @@ public:
         sensor_msgs::PointCloud2 output;
         pcl::toROSMsg(*clusters, output);
         output.header = input->header;
-        pub_.publish(output);
+        clusters_pub_.publish(output);
+
+        // Create a new PointCloud for the cluster centroids
+        pcl::PointCloud<pcl::PointXYZ>::Ptr centroids(new pcl::PointCloud<pcl::PointXYZ>);
+
+        for (const auto& indices : cluster_indices)
+        {
+            Eigen::Vector4f centroid;
+            pcl::compute3DCentroid(*cloud, indices, centroid);
+            pcl::PointXYZ centroid_point(centroid[0], centroid[1], centroid[2]);
+            centroids->points.push_back(centroid_point);
+        }
+
+        // Convert the PCL PointCloud to ROS PointCloud2 and publish
+        sensor_msgs::PointCloud2 centroids_output;
+        pcl::toROSMsg(*centroids, centroids_output);
+        centroids_output.header = input->header;
+        centroids_pub_.publish(centroids_output);
     }
 
 private:
     ros::NodeHandle nh_;
     ros::Subscriber sub_;
-    ros::Publisher pub_;
+    ros::Publisher clusters_pub_;
+    ros::Publisher centroids_pub_;
 };
 
 int main(int argc, char** argv)

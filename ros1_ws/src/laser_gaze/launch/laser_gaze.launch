@@ -35,7 +35,7 @@
     <param name="/cluster/x_max" type="double" value="1.0"/>
     <param name="/cluster/y_min" type="double" value="-0.75"/>
     <param name="/cluster/y_max" type="double" value="1.0"/>
-    <param name="/cluster/z_min" type="double" value="0.0"/>
+    <param name="/cluster/z_min" type="double" value="0.25"/>
     <param name="/cluster/z_max" type="double" value="5.0"/>
     <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="cluster" respawn="true">
         <remap from="/x_min" to="/cluster/x_min"/>
@@ -49,6 +49,7 @@
     <!-- Object Detection Node -->
     <remap from="/pcl_cluster_input" to="/object_identifier/cloud_filtered"/>
     <remap from="/pcl_cluster_output" to="/object_identifier/clusters"/>
+    <remap from="/pcl_centroid_output" to="/object_identifier/centroids"/>
     <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true"/>
 
     <!-- Audio Feedback Node -->
