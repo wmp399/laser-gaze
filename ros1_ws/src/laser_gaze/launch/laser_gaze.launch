@@ -9,7 +9,7 @@
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
     <remap from="/pcl_filter_output" to="/flatness/cloud_filtered"/>
     <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="flatness" respawn="true">
-        <rosparam command="load" file="$(find point_cloud_filter)/config/flatness_cfg.yaml"/>
+        <rosparam command="load" file="$(find point_cloud_filter)/config/flatness_filter_cfg.yaml"/>
     </node>
 
     <!-- Flatness Calculator Node-->
@@ -39,7 +39,9 @@
     <remap from="/pcl_cluster_input" to="/object_identifier/cloud_filtered"/>
     <remap from="/pcl_cluster_output" to="/object_identifier/clusters"/>
     <remap from="/pcl_centroid_output" to="/object_identifier/centroids"/>
-    <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true"/>
+    <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true">
+        <rosparam command="load" file="$(find point_cloud_object_identifier)/config/cluster_extraction_cfg.yaml"/>
+    </node>
 
     <!-- Convert from PCL to Audio Params Node -->
     <remap from="/input_topic" to="/object_identifier/centroids"/>

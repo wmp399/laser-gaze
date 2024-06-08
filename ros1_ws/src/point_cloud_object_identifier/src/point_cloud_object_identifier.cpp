@@ -24,6 +24,9 @@ public:
         clusters_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/pcl_cluster_output", 1);
         // Advertise the output point cloud topic for clusters
         centroids_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/pcl_centroid_output", 1);
+        nh_.param<double>("/cluster_tolerance", cluster_tolerance_, 0.10);
+        nh_.param<double>("/min_cluster_size", min_cluster_size_, 5);
+        nh_.param<double>("/max_cluster_size", max_cluster_size_, 5000);
     }
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
@@ -37,9 +40,9 @@ public:
 
         std::vector<pcl::PointIndices> cluster_indices;
         pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
-        ec.setClusterTolerance(0.10); // 10cm
-        ec.setMinClusterSize(50);
-        ec.setMaxClusterSize(25000);
+        ec.setClusterTolerance(cluster_tolerance_);
+        ec.setMinClusterSize(min_cluster_size_);
+        ec.setMaxClusterSize(max_cluster_size_);
         ec.setSearchMethod(tree);
         ec.setInputCloud(cloud);
         ec.extract(cluster_indices);
@@ -84,6 +87,10 @@ private:
     ros::Subscriber sub_;
     ros::Publisher clusters_pub_;
     ros::Publisher centroids_pub_;
+
+    double cluster_tolerance_;
+    double min_cluster_size_;
+    double max_cluster_size_;
 };
 
 int main(int argc, char** argv)
