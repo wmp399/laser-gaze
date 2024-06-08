@@ -84,7 +84,7 @@ private:
     {
         // Construct the sox command to play the beep
         std::ostringstream command;
-        command << "play -V -r 48000 -n -b 16 -c 2 synth 0.1 sin " << pitch_ << " "; 
+        command << "play -r 48000 -n -q -b 16 -c 2 synth 0.1 sin " << pitch_ << " "; 
         command << "vol " << volume_;
 
         // Add channel control
