@@ -22,7 +22,7 @@ public:
 
         // Initialize default values
         pitch_ = 440.0;  // A4 note
-        volume_ = 0.5;    // 50% volume
+        volume_ = 0.5;   // 50% volume
         channel_ = 0;    // Default audio channel -- L=-1, C=0, R=+1
         interval_ = 1.0; // Interval between beeps in seconds (1.0s)
     }
