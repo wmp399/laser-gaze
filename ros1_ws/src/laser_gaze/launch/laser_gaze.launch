@@ -7,9 +7,15 @@
 
     <!-- Flatness Filter Node-->
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
-    <remap from="/pcl_filter_output" to="/flatness/cloud_filtered"/>
-    <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="flatness" respawn="true">
+    <remap from="/pcl_filter_output" to="/flatness_filter/cloud_filtered"/>
+    <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="flatness_filter" respawn="true">
         <rosparam command="load" file="$(find point_cloud_filter)/config/flatness_filter_cfg.yaml"/>
+        <remap from="/x_min" to="/flatness_filter/x_min"/>
+        <remap from="/x_max" to="/flatness_filter/x_max"/>
+        <remap from="/y_min" to="/flatness_filter/y_min"/>
+        <remap from="/y_max" to="/flatness_filter/y_max"/>
+        <remap from="/z_min" to="/flatness_filter/z_min"/>
+        <remap from="/z_max" to="/flatness_filter/z_max"/>
     </node>
 
     <!-- Flatness Calculator Node-->
@@ -17,30 +23,29 @@
     <remap from="/pcl_flatness_output" to="/flatness/flatness_value"/>
     <node pkg="point_cloud_flatness_calculator" type="point_cloud_flatness_calculator" name="pcl_flatness" ns="flatness" respawn="true"/>
 
+
     <!-- Cluster Filter Node-->
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
-    <remap from="/pcl_filter_output" to="/object_identifier/cloud_filtered"/>
-    <param name="/cluster/x_min" type="double" value="-1.0"/>
-    <param name="/cluster/x_max" type="double" value="1.0"/>
-    <param name="/cluster/y_min" type="double" value="-0.75"/>
-    <param name="/cluster/y_max" type="double" value="1.0"/>
-    <param name="/cluster/z_min" type="double" value="0.25"/>
-    <param name="/cluster/z_max" type="double" value="5.0"/>
-    <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="cluster" respawn="true">
-        <remap from="/x_min" to="/cluster/x_min"/>
-        <remap from="/x_max" to="/cluster/x_max"/>
-        <remap from="/y_min" to="/cluster/y_min"/>
-        <remap from="/y_max" to="/cluster/y_max"/>
-        <remap from="/z_min" to="/cluster/z_min"/>
-        <remap from="/z_max" to="/cluster/z_max"/>
+    <remap from="/pcl_filter_output" to="/cluster_filter/cloud_filtered"/>
+    <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="cluster_filter" respawn="true">
+        <rosparam command="load" file="$(find point_cloud_filter)/config/cluster_filter_cfg.yaml"/>
+        <remap from="/x_min" to="/cluster_filter/x_min"/>
+        <remap from="/x_max" to="/cluster_filter/x_max"/>
+        <remap from="/y_min" to="/cluster_filter/y_min"/>
+        <remap from="/y_max" to="/cluster_filter/y_max"/>
+        <remap from="/z_min" to="/cluster_filter/z_min"/>
+        <remap from="/z_max" to="/cluster_filter/z_max"/>
     </node>
 
     <!-- Cluster Detection Node -->
-    <remap from="/pcl_cluster_input" to="/object_identifier/cloud_filtered"/>
+    <remap from="/pcl_cluster_input" to="/cluster_filter/cloud_filtered"/>
     <remap from="/pcl_cluster_output" to="/object_identifier/clusters"/>
     <remap from="/pcl_centroid_output" to="/object_identifier/centroids"/>
-    <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true">
+    <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" respawn="true">
         <rosparam command="load" file="$(find point_cloud_object_identifier)/config/cluster_extraction_cfg.yaml"/>
+        <remap from="/cluster_tolerance" to="/object_identifier/cluster_tolerance"/>
+        <remap from="/min_cluster_size" to="/object_identifier/min_cluster_size"/>
+        <remap from="/max_cluster_size" to="/object_identifier/max_cluster_size"/>
     </node>
 
     <!-- Convert from PCL to Audio Params Node -->
@@ -49,8 +54,19 @@
     <remap from="/volume_output" to="/audio/volume"/>
     <remap from="/channel_output" to="/audio/channel"/>
     <remap from="/interval_output" to="/audio/interval"/>
-    <node pkg="pcl_to_audio" type="pcl_to_audio_node" name="pcl_to_audio" ns="audio" respawn="true"> 
+    <node pkg="pcl_to_audio" type="pcl_to_audio_node" name="pcl_to_audio" respawn="true"> 
         <rosparam command="load" file="$(find pcl_to_audio)/config/audio_cfg.yaml"/>
+        <remap from="/min_pitch" to="/pcl_to_audio/min_pitch"/>
+        <remap from="/max_pitch" to="/pcl_to_audio/max_pitch"/>
+        <remap from="/min_angle" to="/pcl_to_audio/min_angle"/>
+        <remap from="/max_angle" to="/pcl_to_audio/max_angle"/>
+        <remap from="/min_volume" to="/pcl_to_audio/min_volume"/>
+        <remap from="/max_volume" to="/pcl_to_audio/max_volume"/>
+        <remap from="/center_band" to="/pcl_to_audio/center_band"/>
+        <remap from="/min_interval" to="/pcl_to_audio/min_interval"/>
+        <remap from="/max_interval" to="/pcl_to_audio/max_interval"/>
+        <remap from="/min_distance" to="/pcl_to_audio/min_distance"/>
+        <remap from="/max_distance" to="/pcl_to_audio/max_distance"/>
     </node>
 
     <!-- Audio Feedback Node -->
@@ -59,5 +75,8 @@
     <remap from="/channel" to="/audio/channel"/>
     <remap from="/interval" to="/audio/interval"/>
     <node pkg="play_beep" type="play_beep_node" name="audio_feedback" ns="audio" respawn="true"/>
+
+    <!--Static Transform Publisher -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="position_offset" respawn="true" args="0 -0.60 0 1.57 1.57 0 unilidar_lidar laser_corrected"/>
 
 </launch>

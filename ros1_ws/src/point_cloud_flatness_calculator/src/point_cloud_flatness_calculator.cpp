@@ -44,7 +44,7 @@ public:
         std_msgs::Float64 output;
         output.data = calculateFlatness(cloud);
         flatness_pub_.publish(output);
-        //ROS_INFO("Flatness of the point cloud: %f", output.data);
+        ROS_INFO("Flatness of the point cloud: %f", output.data);
     }
 
     double calculateFlatness(const pcl::PointCloud<pcl::PointXYZ>::Ptr& points)

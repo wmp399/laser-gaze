@@ -9,10 +9,10 @@ min_volume: 0.0     # 0.0 is muted
 max_volume: 1.0     # 1.0 is full volume
 
 # If 'angle' is less than this threshold, play beep on both channels
-center_band: 5      # in degrees
+center_band: 10      # in degrees
 
 # Range constants for distance to beep interval conversion
 min_interval: 0.1   # in seconds
-max_interval: 2.0   # in seconds
-min_distance: 0.0   # in meters
+max_interval: 3.0   # in seconds
+min_distance: 0.1   # in meters
 max_distance: 10.0  # in meters

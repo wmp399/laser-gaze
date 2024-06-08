@@ -27,6 +27,8 @@ public:
         nh_.param<double>("/cluster_tolerance", cluster_tolerance_, 0.10);
         nh_.param<double>("/min_cluster_size", min_cluster_size_, 5);
         nh_.param<double>("/max_cluster_size", max_cluster_size_, 5000);
+
+        // ROS_INFO("Cluster Proximity Tolerance: %f", cluster_tolerance_);
     }
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
