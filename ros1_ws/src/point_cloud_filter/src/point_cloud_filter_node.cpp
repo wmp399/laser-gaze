@@ -23,11 +23,11 @@ public:
 
         // Get the ROS parameters
         ros::param::param<double>("/x_min", x_min_, 0.0);
-        ros::param::param<double>("/x_min", x_max_, 1.0);
+        ros::param::param<double>("/x_max", x_max_, 1.0);
         ros::param::param<double>("/y_min", y_min_, 0.0);
-        ros::param::param<double>("/y_min", y_max_, 1.0);
+        ros::param::param<double>("/y_max", y_max_, 1.0);
         ros::param::param<double>("/z_min", z_min_, 0.0);
-        ros::param::param<double>("/z_min", z_max_, 1.0);
+        ros::param::param<double>("/z_max", z_max_, 1.0);
     }
 
 private:
