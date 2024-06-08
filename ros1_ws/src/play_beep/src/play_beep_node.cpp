@@ -23,7 +23,7 @@ public:
         // Initialize default values
         pitch_ = 440.0;  // A4 note
         volume_ = 0.5;    // 50% volume
-        channel_ = 0;    // Default audio channel
+        channel_ = 0;    // Default audio channel -- L=-1, C=0, R=+1
         interval_ = 1.0; // Interval between beeps in seconds (1.0s)
     }
 
@@ -84,14 +84,16 @@ private:
     {
         // Construct the sox command to play the beep
         std::ostringstream command;
-        command << "play -n synth 0.1 sine " << pitch_ << " "; 
+        command << "play -V -r 48000 -n -b 16 -c 2 synth 0.1 sin " << pitch_ << " "; 
         command << "vol " << volume_;
 
         // Add channel control
-        if (channel_ == 0) {
-            command << " remix 1";  // Left channel
-        } else if (channel_ == 1) {
-            command << " remix 2";  // Right channel
+        if (channel_ == -1) {
+            command << " remix 1 0";    // Left channel
+        } else if (channel_ == 0) {
+            command << " remix 1 1";    // Both channels
+        } else if (channel_== 1) {
+            command << " remix 0 1";    // Right channel
         }
 
         // Execute the sox command
