@@ -53,6 +53,12 @@
     <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true"/>
 
     <!-- Convert from PCL to Audio Params Node -->
+    <remap from="/input_topic" to="/object_identifier/centroids"/>
+    <remap from="/pitch_output" to="/audio/pitch"/>
+    <remap from="/volume_output" to="/audio/volume"/>
+    <remap from="/channel_output" to="/audio/channel"/>
+    <remap from="/interval_output" to="/audio/interval"/>
+    <node pkg="pcl_to_audio" type="pcl_to_audio_node" name="pcl_to_audio" ns="audio" respawn="true"/>
 
     <!-- Audio Feedback Node -->
     <remap from="/pitch" to="/audio/pitch"/>
