@@ -1,13 +1,13 @@
 <launch>
     <!-- Unilidar SDK Node (Unitree LIDAR L1 Driver) -->
-    <include file="$(find unitree_lidar_ros)/launch/run_without_rviz.launch" />
+    <include file="$(find unitree_lidar_ros)/launch/run_without_rviz.launch"/>
 
     <!-- LIO and Mapping nodes -->
-    <include file="$(find point_lio_unilidar)/launch/mapping_unilidar_without_rviz.launch" />
+    <include file="$(find point_lio_unilidar)/launch/mapping_unilidar_without_rviz.launch"/>
 
     <!-- Flatness Filter Node-->
-    <remap from="/pcl_filter_input" to="/unilidar/cloud" />
-    <remap from="/pcl_filter_output" to="/flatness/cloud_filtered" />
+    <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
+    <remap from="/pcl_filter_output" to="/flatness/cloud_filtered"/>
     <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="flatness" respawn="true">
         <param name="x_min" type="double" value="-1.0"/>
         <param name="x_max" type="double" value="1.0"/>
@@ -18,13 +18,13 @@
     </node>
 
     <!-- Flatness Calculator Node-->
-    <remap from="/pcl_flatness_input" to="/flatness/cloud_filtered" />
-    <remap from="/pcl_flatness_output" to="/flatness/flatness_value" />
+    <remap from="/pcl_flatness_input" to="/flatness/cloud_filtered"/>
+    <remap from="/pcl_flatness_output" to="/flatness/flatness_value"/>
     <node pkg="point_cloud_flatness_calculator" type="point_cloud_flatness_calculator" name="pcl_flatness" ns="flatness" respawn="true"/>
 
     <!-- Cluster Filter Node-->
-    <remap from="/pcl_filter_input" to="/unilidar/cloud" />
-    <remap from="/pcl_filter_output" to="/object_identifier/cloud_filtered" />
+    <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
+    <remap from="/pcl_filter_output" to="/object_identifier/cloud_filtered"/>
     <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="cluster" respawn="true">
         <param name="x_min" type="double" value="-1.0"/>
         <param name="x_max" type="double" value="1.0"/>
@@ -34,15 +34,17 @@
         <param name="z_max" type="double" value="1.0"/>
     </node>
 
-    <!-- Object Detection Node-->
-    <remap from="/pcl_cluster_input" to="/object_identifier/cloud_filtered" />
-    <remap from="/pcl_cluster_output" to="/object_identifier/clusters" />
+    <!-- Object Detection Node -->
+    <remap from="/pcl_cluster_input" to="/object_identifier/cloud_filtered"/>
+    <remap from="/pcl_cluster_output" to="/object_identifier/clusters"/>
     <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true"/>
 
-    <!-- Center Audio Node-->
-    <remap from="/play_wav_trigger" to="/audio/beep_center_trigger" />
-    <node pkg="wav_player" type="wav_player" name="beep_center" ns="audio" respawn="true">
-        <param name="wav_file" type="string" value="test.wav"/> <!-- TBD what the actual filename is-->
-    </node>
+    <!-- Audio Feedback Node -->
+    <remap from="/pitch" to="/audio/pitch"/>
+    <remap from="/volume" to="/audio/volume"/>
+    <remap from="/channel" to="/audio/channel"/>
+    <remap from="/interval" to="/audio/interval"/>
+    <node pkg="play_beep" type="play_beep_node" name="audio_feedback" ns="audio" respawn="true"/>
+
 
 </launch>
