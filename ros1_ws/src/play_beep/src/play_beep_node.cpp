@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
-#include <unistd.h> // For usleep
+#include <boost/thread/mutex.hpp>
 
 class BeepNode
 {
@@ -12,104 +12,99 @@ public:
     BeepNode()
     {
         // Initialize subscribers
-        pitch_sub_ = nh_.subscribe("/beep/pitch", 10, &BeepNode::pitchCallback, this);
-        volume_sub_ = nh_.subscribe("/beep/volume", 10, &BeepNode::volumeCallback, this);
-        duty_cycle_sub_ = nh_.subscribe("/beep/duty_cycle", 10, &BeepNode::dutyCycleCallback, this);
-        channel_sub_ = nh_.subscribe("/beep/channel", 10, &BeepNode::channelCallback, this);
+        pitch_sub_ = nh_.subscribe("/pitch", 10, &BeepNode::pitchCallback, this);
+        volume_sub_ = nh_.subscribe("/volume", 10, &BeepNode::volumeCallback, this);
+        channel_sub_ = nh_.subscribe("/channel", 10, &BeepNode::channelCallback, this);
+        interval_sub_ = nh_.subscribe("/interval", 10, &BeepNode::intervalCallback, this);
+
+        // Initialize the timer with a default interval of 1 second
+        timer_ = nh_.createTimer(ros::Duration(1.0), &BeepNode::timerCallback, this);
 
         // Initialize default values
         pitch_ = 440.0;  // A4 note
-        volume_ = 50;    // 50% volume
-        duty_cycle_ = 50; // 50% duty cycle
+        volume_ = 0.5;    // 50% volume
         channel_ = 0;    // Default audio channel
-        num_beeps_ = 5;  // Number of beeps
-        interval_ = 200000; // Interval between beeps in microseconds (200ms)
-    }
-
-    void spin()
-    {
-        ros::Rate rate(10);  // 10 Hz
-        while (ros::ok())
-        {
-            // Play beep sound
-            playBeep(pitch_, volume_, duty_cycle_, channel_, num_beeps_, interval_);
-
-            ros::spinOnce();
-            rate.sleep();
-        }
+        interval_ = 1.0; // Interval between beeps in seconds (1.0s)
     }
 
 private:
     ros::NodeHandle nh_;
+    
     ros::Subscriber pitch_sub_;
     ros::Subscriber volume_sub_;
-    ros::Subscriber duty_cycle_sub_;
     ros::Subscriber channel_sub_;
+    ros::Subscriber interval_sub_;
 
+    ros::Timer timer_;
+    
     float pitch_;
-    int volume_;
-    int duty_cycle_;
+    float volume_;
     int channel_;
-    int num_beeps_;
-    int interval_;
+    float interval_;
+
+    boost::mutex mutex_;
 
     void pitchCallback(const std_msgs::Float32::ConstPtr& msg)
     {
         pitch_ = msg->data;
+        if (pitch_ < 20) pitch_ = 20;
+        if (pitch_ > 20000) pitch_ = 20000;
         ROS_INFO("Received pitch: %f", pitch_);
     }
 
-    void volumeCallback(const std_msgs::Int32::ConstPtr& msg)
+    void volumeCallback(const std_msgs::Float32::ConstPtr& msg)
     {
         volume_ = msg->data;
-        ROS_INFO("Received volume: %d", volume_);
-    }
-
-    void dutyCycleCallback(const std_msgs::Int32::ConstPtr& msg)
-    {
-        duty_cycle_ = msg->data;
-        ROS_INFO("Received duty cycle: %d", duty_cycle_);
+        if (volume_ < 0.0) volume_ = 0.0;
+        if (volume_ > 1.0) volume_ = 1.0;
+        ROS_INFO("Received volume: %f", volume_);
     }
 
     void channelCallback(const std_msgs::Int32::ConstPtr& msg)
     {
         channel_ = msg->data;
+        if (channel_ < -1) channel_ = -1;
+        if (channel_ > 1) channel_ = 1; 
         ROS_INFO("Received channel: %d", channel_);
     }
 
-    void playBeep(float pitch, int volume, int duty_cycle, int channel, int num_beeps, int interval)
+    void intervalCallback(const std_msgs::Float32::ConstPtr& msg)
     {
-        for (int i = 0; i < num_beeps; ++i) {
-            // Construct the sox command to play the beep
-            std::ostringstream command;
-            command << "play -n synth 0.1 sine " << pitch
-                    << " vol " << (volume / 100.0);
+        boost::mutex::scoped_lock lock(mutex_);
+        interval_ = msg->data;
+        if (interval_ < 0.01) interval_ = 0.01;
+        if (interval_ > 10.0) interval_ = 10.0;
+        ROS_INFO("Received interval: %f", interval_);
+        timer_.stop();
+        timer_ = nh_.createTimer(ros::Duration(interval_), &BeepNode::timerCallback, this);
+        ROS_INFO("Interval updated to: %f seconds", interval_);      
+    }
 
-            // Add channel control
-            if (channel == 0) {
-                command << " remix 1";  // Left channel
-            } else if (channel == 1) {
-                command << " remix 2";  // Right channel
-            }
+    void timerCallback(const ros::TimerEvent&)
+    {
+        // Construct the sox command to play the beep
+        std::ostringstream command;
+        command << "play -n synth 0.1 sine " << pitch_ << " "; 
+        command << "vol " << volume_;
 
-            // Execute the sox command
-            system(command.str().c_str());
-
-            ROS_INFO("Playing beep sound with pitch: %f Hz, volume: %d%%, duty cycle: %d%%, channel: %d",
-                     pitch, volume, duty_cycle, channel);
-
-            // Pause between beeps
-            usleep(interval);
+        // Add channel control
+        if (channel_ == 0) {
+            command << " remix 1";  // Left channel
+        } else if (channel_ == 1) {
+            command << " remix 2";  // Right channel
         }
+
+        // Execute the sox command
+        system(command.str().c_str());
+        ROS_INFO("Playing beep sound with pitch: %f Hz, volume: %f, channel: %d, interval: %f",
+                     pitch_, volume_, channel_, interval_);
     }
 };
 
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "play_beep_node");
-
-    BeepNode beepNode;
-    beepNode.spin();
-
+    BeepNode beep_node;
+    ros::spin();
     return 0;
 }
