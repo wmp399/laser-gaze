@@ -22,12 +22,12 @@ public:
         pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/pcl_filter_output", 1);
 
         // Get the ROS parameters
-        ros::param::param<double>("/x_min", x_min_, 0.0);
-        ros::param::param<double>("/x_max", x_max_, 1.0);
-        ros::param::param<double>("/y_min", y_min_, 0.0);
-        ros::param::param<double>("/y_max", y_max_, 1.0);
-        ros::param::param<double>("/z_min", z_min_, 0.0);
-        ros::param::param<double>("/z_max", z_max_, 1.0);
+        nh.param<double>( "/x_min", x_min_, 0.0);
+        nh.param<double>("/x_max", x_max_, 1.0);
+        nh.param<double>("/y_min", y_min_, 0.0);
+        nh.param<double>("/y_max", y_max_, 1.0);
+        nh.param<double>("/z_min", z_min_, 0.0);
+        nh.param<double>("/z_max", z_max_, 1.0);
     }
 
 private:
@@ -41,9 +41,18 @@ private:
     double z_max_;
 
     void pointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg) {
+             
         // Convert PointCloud2 message to PCL PointCloud
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
         pcl::fromROSMsg(*cloud_msg, *cloud);
+
+        ROS_INFO("X MIN: %f", x_min_);
+
+        if (cloud->points.empty())
+        {
+            ROS_INFO("No points in the point cloud.");
+            return;
+        }
 
         // Perform PassThrough filtering to extract the region of interest
         pcl::PassThrough<pcl::PointXYZ> pass;

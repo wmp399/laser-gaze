@@ -8,13 +8,19 @@
     <!-- Flatness Filter Node-->
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
     <remap from="/pcl_filter_output" to="/flatness/cloud_filtered"/>
+    <param name="/flatness/x_min" type="double" value="-1.0"/>
+    <param name="/flatness/x_max" type="double" value="1.0"/>
+    <param name="/flatness/y_min" type="double" value="-1.0"/>
+    <param name="/flatness/y_max" type="double" value="-0.5"/>
+    <param name="/flatness/z_min" type="double" value="0.0"/>
+    <param name="/flatness/z_max" type="double" value="5.0"/>
     <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="flatness" respawn="true">
-        <param name="x_min" type="double" value="-1.0"/>
-        <param name="x_max" type="double" value="1.0"/>
-        <param name="y_min" type="double" value="-1.0"/>
-        <param name="y_max" type="double" value="1.0"/>
-        <param name="z_min" type="double" value="-1.0"/>
-        <param name="z_max" type="double" value="1.0"/>
+        <remap from="/x_min" to="/flatness/x_min"/>
+        <remap from="/x_max" to="/flatness/x_max"/>
+        <remap from="/y_min" to="/flatness/y_min"/>
+        <remap from="/y_max" to="/flatness/y_max"/>
+        <remap from="/z_min" to="/flatness/z_min"/>
+        <remap from="/z_max" to="/flatness/z_max"/>
     </node>
 
     <!-- Flatness Calculator Node-->
@@ -25,13 +31,19 @@
     <!-- Cluster Filter Node-->
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
     <remap from="/pcl_filter_output" to="/object_identifier/cloud_filtered"/>
+    <param name="/cluster/x_min" type="double" value="-1.0"/>
+    <param name="/cluster/x_max" type="double" value="1.0"/>
+    <param name="/cluster/y_min" type="double" value="-0.75"/>
+    <param name="/cluster/y_max" type="double" value="1.0"/>
+    <param name="/cluster/z_min" type="double" value="0.0"/>
+    <param name="/cluster/z_max" type="double" value="5.0"/>
     <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="cluster" respawn="true">
-        <param name="x_min" type="double" value="-1.0"/>
-        <param name="x_max" type="double" value="1.0"/>
-        <param name="y_min" type="double" value="-1.0"/>
-        <param name="y_max" type="double" value="1.0"/>
-        <param name="z_min" type="double" value="-1.0"/>
-        <param name="z_max" type="double" value="1.0"/>
+        <remap from="/x_min" to="/cluster/x_min"/>
+        <remap from="/x_max" to="/cluster/x_max"/>
+        <remap from="/y_min" to="/cluster/y_min"/>
+        <remap from="/y_max" to="/cluster/y_max"/>
+        <remap from="/z_min" to="/cluster/z_min"/>
+        <remap from="/z_max" to="/cluster/z_max"/>
     </node>
 
     <!-- Object Detection Node -->
@@ -45,6 +57,5 @@
     <remap from="/channel" to="/audio/channel"/>
     <remap from="/interval" to="/audio/interval"/>
     <node pkg="play_beep" type="play_beep_node" name="audio_feedback" ns="audio" respawn="true"/>
-
 
 </launch>
