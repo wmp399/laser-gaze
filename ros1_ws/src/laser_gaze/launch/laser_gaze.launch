@@ -46,11 +46,13 @@
         <remap from="/z_max" to="/cluster/z_max"/>
     </node>
 
-    <!-- Object Detection Node -->
+    <!-- Cluster Detection Node -->
     <remap from="/pcl_cluster_input" to="/object_identifier/cloud_filtered"/>
     <remap from="/pcl_cluster_output" to="/object_identifier/clusters"/>
     <remap from="/pcl_centroid_output" to="/object_identifier/centroids"/>
     <node pkg="point_cloud_object_identifier" type="point_cloud_object_identifier" name="object_identifier" ns="object_identifier" respawn="true"/>
+
+    <!-- Convert from PCL to Audio Params Node -->
 
     <!-- Audio Feedback Node -->
     <remap from="/pitch" to="/audio/pitch"/>
