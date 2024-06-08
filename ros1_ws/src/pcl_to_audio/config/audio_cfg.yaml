@@ -1,0 +1,18 @@
+# Range constants for angle to beep frequency conversion
+min_pitch: 200      # in Hz
+max_pitch: 1000     # in Hz
+min_angle: -70      # in degrees
+max_angle: 70       # in degrees
+
+# Acceptable Volume Limits
+min_volume: 0.0     # 0.0 is muted
+max_volume: 1.0     # 1.0 is full volume
+
+# If 'angle' is less than this threshold, play beep on both channels
+center_band: 5      # in degrees
+
+# Range constants for distance to beep interval conversion
+min_interval: 0.1   # in seconds
+max_interval: 2.0   # in seconds
+min_distance: 0.0   # in meters
+max_distance: 10.0  # in meters

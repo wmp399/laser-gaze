@@ -20,6 +20,19 @@ public:
         volume_pub_ = nh.advertise<std_msgs::Float32>("volume_output", 10);
         channel_pub_ = nh.advertise<std_msgs::Int32>("channel_output", 10);
         interval_pub_ = nh.advertise<std_msgs::Float32>("interval_output", 10);
+
+        // Get the launch parameters
+        nh.param<double>("/min_pitch", min_pitch_, 20.0);
+        nh.param<double>("/max_pitch", max_pitch_, 20000.0);
+        nh.param<double>("/min_angle", min_angle_, -180.0);
+        nh.param<double>("/max_angle", max_angle_, 180.0);
+
+        nh.param<double>("/center_band", center_band_, 5.0);
+
+        nh.param<double>("/min_interval", min_interval_, 0.05);
+        nh.param<double>("/max_interval", max_interval_, 5.00);
+        nh.param<double>("/min_distance", min_distance_, 0.00);
+        nh.param<double>("/max_distance", max_distance_, 20.00);
     }
 
     // Function to handle node spin
@@ -39,6 +52,18 @@ private:
 
     ros::Subscriber sub_;
 
+    double min_pitch_;
+    double max_pitch_;
+    double min_angle_;
+    double max_angle_;
+
+    double center_band_;
+
+    double min_interval_;
+    double max_interval_;
+    double min_distance_;
+    double max_distance_;
+
     // Callback function to process data received from the subscribed topic
     void callback(const sensor_msgs::PointCloud2ConstPtr& input)
     {
@@ -46,28 +71,25 @@ private:
         pcl::fromROSMsg(*input, *cloud);
 
         float closest_point[3] = {0, 0, 0};
-        float min_distance = 1000;
+        float closest_point_dist = max_distance_;
 
         // Iterate over all points in the point cloud to find the closest one
         for (const auto& point : cloud->points)
         {
             // Calculate the distance from the origin
             float distance = std::sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
-            if (distance < min_distance) {
-                min_distance = distance;
+            if (distance < closest_point_dist) {
+                closest_point_dist = distance;
                 closest_point[0] = point.x;
                 closest_point[1] = point.y;
                 closest_point[2] = point.z;
             }
         }
 
-        float min_pitch = 1000;
-        float max_pitch = 200;
-
         float angle = abs(cos(closest_point[0]/closest_point[2]))*180/3.14159;
         bool angle_sign = closest_point[0]>0;
 
-        float pitch = 200 + (1000 - 200) * (angle) / (45.0);
+        float pitch = min_pitch_ + (max_pitch_ - min_pitch_) * (angle) / (max_angle_);
 
         // Create and publish the pitch
         std_msgs::Float32 pitch_msg;
@@ -81,12 +103,12 @@ private:
 
         // Create and publish the channel
         std_msgs::Int32 channel_msg;
-        if (angle < 5) channel_msg.data = 0;
+        if (angle < center_band_) channel_msg.data = 0;
         else if (angle_sign) channel_msg.data = 1;
         else channel_msg.data = -1;
         channel_pub_.publish(channel_msg);
 
-        float interval = 0.1 + (2.0 - 0.1) * (min_distance / 10.0);
+        float interval = min_interval_ + (max_interval_ - min_interval_) * (closest_point_dist / (max_distance_ - min_distance_));
 
         // Create and publish the interval
         std_msgs::Float32 interval_msg;

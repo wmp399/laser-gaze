@@ -8,19 +8,8 @@
     <!-- Flatness Filter Node-->
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
     <remap from="/pcl_filter_output" to="/flatness/cloud_filtered"/>
-    <param name="/flatness/x_min" type="double" value="-1.0"/>
-    <param name="/flatness/x_max" type="double" value="1.0"/>
-    <param name="/flatness/y_min" type="double" value="-1.0"/>
-    <param name="/flatness/y_max" type="double" value="-0.5"/>
-    <param name="/flatness/z_min" type="double" value="0.0"/>
-    <param name="/flatness/z_max" type="double" value="5.0"/>
     <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="pcl_filter" ns="flatness" respawn="true">
-        <remap from="/x_min" to="/flatness/x_min"/>
-        <remap from="/x_max" to="/flatness/x_max"/>
-        <remap from="/y_min" to="/flatness/y_min"/>
-        <remap from="/y_max" to="/flatness/y_max"/>
-        <remap from="/z_min" to="/flatness/z_min"/>
-        <remap from="/z_max" to="/flatness/z_max"/>
+        <rosparam command="load" file="$(find point_cloud_filter)/config/flatness_cfg.yaml"/>
     </node>
 
     <!-- Flatness Calculator Node-->
@@ -58,7 +47,9 @@
     <remap from="/volume_output" to="/audio/volume"/>
     <remap from="/channel_output" to="/audio/channel"/>
     <remap from="/interval_output" to="/audio/interval"/>
-    <node pkg="pcl_to_audio" type="pcl_to_audio_node" name="pcl_to_audio" ns="audio" respawn="true"/>
+    <node pkg="pcl_to_audio" type="pcl_to_audio_node" name="pcl_to_audio" ns="audio" respawn="true"> 
+        <rosparam command="load" file="$(find pcl_to_audio)/config/audio_cfg.yaml"/>
+    </node>
 
     <!-- Audio Feedback Node -->
     <remap from="/pitch" to="/audio/pitch"/>
