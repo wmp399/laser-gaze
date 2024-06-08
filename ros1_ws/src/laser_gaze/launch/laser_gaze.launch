@@ -70,10 +70,10 @@
     </node>
 
     <!-- Audio Feedback Node -->
-    <remap from="/pitch" to="/audio/pitch"/>
+    <!-- <remap from="/pitch" to="/audio/pitch"/>
     <remap from="/volume" to="/audio/volume"/>
     <remap from="/channel" to="/audio/channel"/>
-    <remap from="/interval" to="/audio/interval"/>
+    <remap from="/interval" to="/audio/interval"/> -->
     <node pkg="play_beep" type="play_beep_node" name="audio_feedback" ns="audio" respawn="true"/>
 
     <!--Static Transform Publisher -->
