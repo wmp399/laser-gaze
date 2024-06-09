@@ -105,7 +105,7 @@ private:
         // Create and publish the channel
         std_msgs::Int32 channel_msg;
         if (angle < center_band_) channel_msg.data = 0;
-        else if (angle_sign) channel_msg.data = 1;
+        else if (!angle_sign) channel_msg.data = 1;
         else channel_msg.data = -1;
         channel_pub_.publish(channel_msg);
 
