@@ -129,9 +129,11 @@ class BeepBetterNode {
         void timerCallback(const ros::TimerEvent&) {
             if (cycles_since_last_beep_ >= interval_ / timer_duration_) {
                 cycles_since_last_beep_ = 0;
+                ROS_INFO("TIMESTAMP Before: %f", ros::Time::now().toSec());
                 generateBeep(pitch_);
                 Pa_StopStream(stream_);
                 Pa_StartStream(stream_);
+                ROS_INFO("TIMESTAMP After: %f", ros::Time::now().toSec());
             } else if (cycles_since_last_beep_ >= length_ / timer_duration_) {
                 //std::fill(beep_data_.begin(), beep_data_.end(), 0);
                 Pa_StopStream(stream_);

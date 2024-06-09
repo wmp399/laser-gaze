@@ -14,5 +14,5 @@ center_band: 10      # in degrees
 # Range constants for distance to beep interval conversion
 min_interval: 0.05  # in seconds
 max_interval: 4.0   # in seconds
-min_distance: 0.25   # in meters
+min_distance: 0.05   # in meters
 max_distance: 5.0  # in meters
