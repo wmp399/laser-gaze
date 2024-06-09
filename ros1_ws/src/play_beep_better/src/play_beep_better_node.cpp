@@ -27,7 +27,7 @@ class BeepBetterNode {
             interval_ = 1.0; // Interval between beeps in seconds (1.0s)
             length_ = interval_ / 4.0;
 
-            timer_duration_ = 0.010; // 10 milliseconds
+            timer_duration_ = 0.005; // 10 milliseconds
             cycles_since_last_beep_ = 0;
 
             Pa_Initialize();
@@ -85,7 +85,7 @@ class BeepBetterNode {
 
         void intervalCallback(const std_msgs::Float32::ConstPtr& msg) {
             interval_ = msg->data;
-            if (interval_ < 0.01) interval_ = 0.01;
+            if (interval_ < 0.02) interval_ = 0.02;
             if (interval_ > 10.0) interval_ = 10.0;
             length_ = interval_ / 4.0;
             if (length_ > 0.5) length_ = 0.5;
@@ -95,7 +95,7 @@ class BeepBetterNode {
         void generateBeep(float frequency) {
             beep_data_.resize(SAMPLE_RATE_*2);
             for (int i = 0; i < SAMPLE_RATE_; ++i) {
-                float sample = volume_ * std::sin((2.f * 3.14159 * i * pitch_) / SAMPLE_RATE_);
+                float sample = volume_ * std::sin((2.f * 3.14159 * i * frequency) / SAMPLE_RATE_);
                 if (channel_ <= 0) {
                     beep_data_[2*i] = sample;
                 } else beep_data_[2*i] = 0;
@@ -133,7 +133,8 @@ class BeepBetterNode {
                 Pa_StopStream(stream_);
                 Pa_StartStream(stream_);
             } else if (cycles_since_last_beep_ >= length_ / timer_duration_) {
-                std::fill(beep_data_.begin(), beep_data_.end(), 0);
+                //std::fill(beep_data_.begin(), beep_data_.end(), 0);
+                Pa_StopStream(stream_);
                 cycles_since_last_beep_++;
             } else {
                 cycles_since_last_beep_++;

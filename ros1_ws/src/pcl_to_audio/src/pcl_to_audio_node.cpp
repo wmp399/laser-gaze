@@ -86,10 +86,11 @@ private:
             }
         }
 
-        float angle = abs(cos(closest_point[0]/closest_point[2]))*180/3.14159;
+        float angle = abs(atan2(closest_point[0],closest_point[2]))*180/3.14159;
+        if (angle > max_angle_) angle = max_angle_;
         bool angle_sign = closest_point[0]>0;
 
-        float pitch = min_pitch_ + (max_pitch_ - min_pitch_) * (angle) / (max_angle_);
+        float pitch = min_pitch_ + (max_pitch_ - min_pitch_) * (max_angle_ - angle) / (max_angle_);
 
         // Create and publish the pitch
         std_msgs::Float32 pitch_msg;
