@@ -8,7 +8,7 @@
     <!-- Flatness Filter Node-->
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
     <remap from="/pcl_filter_output" to="/flatness_filter/cloud_filtered"/>
-    <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="flatness_filter" respawn="true">
+    <node pkg="point_cloud_filter_angled" type="point_cloud_filter_angled_node" name="flatness_filter" respawn="true">
         <rosparam command="load" file="$(find point_cloud_filter)/config/flatness_filter_cfg.yaml"/>
         <remap from="/x_min" to="/flatness_filter/x_min"/>
         <remap from="/x_max" to="/flatness_filter/x_max"/>
@@ -16,6 +16,7 @@
         <remap from="/y_max" to="/flatness_filter/y_max"/>
         <remap from="/z_min" to="/flatness_filter/z_min"/>
         <remap from="/z_max" to="/flatness_filter/z_max"/>
+        <remap from="/angle_max" to="/flatness_filter/angle_max"/>
     </node>
 
     <!-- Flatness Calculator Node-->
@@ -27,14 +28,15 @@
     <!-- Cluster Filter Node-->
     <remap from="/pcl_filter_input" to="/unilidar/cloud"/>
     <remap from="/pcl_filter_output" to="/cluster_filter/cloud_filtered"/>
-    <node pkg="point_cloud_filter" type="point_cloud_filter_node" name="cluster_filter" respawn="true">
-        <rosparam command="load" file="$(find point_cloud_filter)/config/cluster_filter_cfg.yaml"/>
+    <node pkg="point_cloud_filter_angled" type="point_cloud_filter_angled_node" name="cluster_filter" respawn="true">
+        <rosparam command="load" file="$(find point_cloud_filter_angled)/config/cluster_filter_cfg.yaml"/>
         <remap from="/x_min" to="/cluster_filter/x_min"/>
         <remap from="/x_max" to="/cluster_filter/x_max"/>
         <remap from="/y_min" to="/cluster_filter/y_min"/>
         <remap from="/y_max" to="/cluster_filter/y_max"/>
         <remap from="/z_min" to="/cluster_filter/z_min"/>
         <remap from="/z_max" to="/cluster_filter/z_max"/>
+        <remap from="/angle_max" to="/cluster_filter/angle_max"/>
     </node>
 
     <!-- Cluster Detection Node -->
@@ -74,7 +76,7 @@
     <remap from="/volume" to="/audio/volume"/>
     <remap from="/channel" to="/audio/channel"/>
     <remap from="/interval" to="/audio/interval"/>
-    <node pkg="play_beep_better" type="play_beep_better_node" name="audio_feedback" ns="audio" respawn="true"/>
+    <node pkg="play_beep" type="play_beep_node" name="audio_feedback" ns="audio" respawn="true"/>
 
     <!--Static Transform Publisher -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="position_offset" respawn="true" args="0 -0.60 0 1.57 1.57 0 unilidar_lidar laser_corrected"/>
