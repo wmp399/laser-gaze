@@ -74,7 +74,7 @@
     <remap from="/volume" to="/audio/volume"/>
     <remap from="/channel" to="/audio/channel"/>
     <remap from="/interval" to="/audio/interval"/>
-    <node pkg="play_beep" type="play_beep_node" name="audio_feedback" ns="audio" respawn="true"/>
+    <node pkg="play_beep_better" type="play_beep_better_node" name="audio_feedback" ns="audio" respawn="true"/>
 
     <!--Static Transform Publisher -->
     <node pkg="tf2_ros" type="static_transform_publisher" name="position_offset" respawn="true" args="0 -0.60 0 1.57 1.57 0 unilidar_lidar laser_corrected"/>
