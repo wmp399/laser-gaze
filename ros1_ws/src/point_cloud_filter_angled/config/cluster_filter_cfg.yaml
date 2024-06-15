@@ -1,7 +1,8 @@
 # Define Cropping Area Relative to the PCL Origin
 x_min: -2.5
 x_max: 2.5
-y_min: -0.40
+# y_min: -0.40
+y_min: -0.05
 y_max: 1.0
 z_min: 0.30
 z_max: 5.0
